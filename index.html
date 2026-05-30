@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anúncios Locais</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Cabeçalho do site -->
+    <header>
+        <h1>Anúncios da Cidade</h1>
+        <p>Encontre profissionais perto de você</p>
+    </header>
+
+    <!-- Seção de chamada para anunciantes -->
+    <section class="cta">
+        <h2>Quer anunciar seu serviço?</h2>
+        <p>Entre em contato e apareça para novos clientes</p>
+
+        <a class="whatsapp" href="https://wa.me/5531999999999">
+            Anuncie aqui
+        </a>
+
+        <section class="filtros">
+            <button>Todos</button>
+            <button>Eletricista</button>
+            <button>Salão</button>
+            <button>Mecânica</button>
+            <button>Pedreiro</button>
+        </section>
+
+        <!-- Lista de anúncios -->
+         <main>
+            <!-- Anúncios dinâmicos entram aqui -->
+         </main>
+    </section>
+
+    <!-- Campo de busca -->
+        <section class="busca">
+            <input type="text" id="campo-busca" placeholder="Buscar serviços...">
+        </section>
+
+    <section class="formulario">
+        <h2>Cadastro de Anúncio</h2>
+
+        <!-- Formulário de cadastro -->
+        <form id="form-anuncio">
+            <input type="text" name="servico" id="nome" placeholder="Nome do serviço" required>
+
+            <input type="text" id="descricao" placeholder="Descrição do serviço">
+
+            <input type="text" id="whatsapp" placeholder="Whatsapp (DDD + número)" required>
+
+            <select id="categoria" required>
+                <option class="btn-filtro" value="">Selecione uma categoria</option>
+                <option class="btn-filtro" value="Eletricista">Eletricista</option>
+                <option class="btn-filtro" value="Salão">Salão</option>
+                <option class="btn-filtro" value="Mecânica">Mecânica</option>
+                <option class="btn-filtro" value="Pedreiro">Pedreiro</option>
+                <option class="btn-filtro" value="Outros">Outros</option>
+            </select>
+
+            <input type="file" id="imagem" accept="image/*">
+
+            <button type="submit">Enviar</button>
+        </form>
+
+        <button id="limpar-tudo">Limpar todos os anúncios</button>
+    </section>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>
