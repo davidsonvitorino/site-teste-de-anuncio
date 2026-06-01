@@ -1,4 +1,3 @@
-
 /* ============ ESTILOS GERAIS ============ */
 body {
     margin: 0;
@@ -132,19 +131,22 @@ main {
 }
 
 /* ============ BOTÃO WHATSAPP ============ */
+
 .whatsapp {
     display: inline-block;
-    margin-top: 10px;
+    margin: 10px;
     padding: 10px 10px;
-    background-color: #25d366;
-    color: white;
+    background-color: transparent;
+    color: #25d366;
     text-decoration: none;
+    border: 1px solid #25d366;
     border-radius: 5px;
-    font-weight: bold;
+    cursor: pointer;;
 }
 
 .whatsapp:hover {
     background-color: #1ebe5d;
+    color:white;
 }
 
 .excluir {
@@ -162,6 +164,27 @@ main {
     color: white;
 }
 
+/* ============ BTN MEUS ANUNCIOS ============ */
+#btn-meus {
+    background: #222;
+    color: white;
+    
+}
+
+.editar {
+    margin: 10px;
+    padding: 10px 10px;
+    background: transparent;
+    color: #6a3ce7;
+    border: 1px solid #613ce7;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.editar:hover {
+    background: #613ce7;
+    color: white;
+}
 /* ============ FORMULÁRIO ============ */
 .formulario {
     background: white;
