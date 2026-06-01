@@ -1,4 +1,5 @@
 // ============ FIREBASE ============== 
+
   import { initializeApp } from 
   "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
 
@@ -8,9 +9,18 @@
     addDoc,
     getDocs,
     deleteDoc,
-    doc
+    doc,
+    updateDoc
    } from 
    "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+
+   import {
+    getAuth,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    onAuthStateChanged,
+    signOut
+   } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js"
   
   const firebaseConfig = {
     apiKey: "AIzaSyDzJmbzatoZl5Ak-mZ9AMo5G02VKcK_qQE",
@@ -25,13 +35,27 @@
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
+  const auth = getAuth(app);
 
 // ============ SELEÇÃO DE ELEMENTOS ============ 
 const listaAnuncios = [];
 
+const btnCadastro = document.getElementById("btn-cadastro");
+const btnLogin = document.getElementById("btn-login");
+const btnLogout = document.getElementById("btn-logout");
+
+const inputEmail = document.getElementById("email");
+const inputSenha = document.getElementById("senha");
+
+const usuarioLogadoTexto = document.getElementById("usuario-logado");
+
+const btnMeus = document.getElementById("btn-meus");
+const btnTodos = document.getElementById("btn-todos");
+
 const campoBusca = document.getElementById("campo-busca");
 const form = document.getElementById("form-anuncio");
 const main = document.querySelector("main")
+let idEditando = null;
 
 // ============ FUNÇÕES ============ 
 function limparNumero(numero) {
@@ -39,47 +63,81 @@ function limparNumero(numero) {
 }
 
 async function salvarAnuncio(nome, descricao, whatsapp, categoria, imagem) {
-    await addDoc(collection(db, "anuncios"), {
-        nome,
-        descricao,
-        whatsapp,
-        categoria,
-        imagem
-    });
+    const user = auth.currentUser;
 
-    alert("Anúncio salvo na nuvem");
+    try {
 
-    carregarAnunciosFirebase(); //atualiza a lista
+        if ( idEditando) {
+            const referencia = doc(db, "anuncios", idEditando);
+
+            await updateDoc(referencia, {
+                nome,
+                descricao,
+                whatsapp,
+                categoria,
+                imagem
+            });
+
+            idEditando = null;
+
+            alert("Anúncio atualizado!");
+        } else {
+
+        
+            await addDoc(collection(db, "anuncios"), {
+                nome,
+                descricao,
+                whatsapp,
+                categoria,
+                imagem,
+                usuario: user ? user.email : "anonimo"
+            });
+            alert("Anúncio salvo na nuvem");
+        }
+
+        carregarAnunciosFirebase(); //atualiza a lista
+        form.reset();
+
+    } catch (erro) {
+    console.error(erro);
+    alert("Erro ao salvar");
+    }
 }
 
-/*function carregarAnuncios() {
-    const dados = localStorage.getItem("anuncios");
+async function carregarAnunciosFirebase() {
+    try {
+        main.innerHTML = "<p>Carregando anúncios</p>"
 
-    if (dados) {
-        const listaSalva = JSON.parse(dados);
+        const querySnapshot = await getDocs(collection(db, "anuncios"));
 
         listaAnuncios.length = 0;
-        listaAnuncios.push(...listaSalva);
 
-        renderizarAnuncios(listaAnuncios);
-    }
-}*/
-
-async function carregarAnunciosFirebase() {
-    main.innerHTML = "<p>Carregando anúncios</p>"
-
-    const querySnapshot = await getDocs(collection(db, "anuncios"));
-
-    listaAnuncios.length = 0;
-
-    querySnapshot.forEach((doc) => {
-        listaAnuncios.push({
-            id: doc.id,
-            ...doc.data()
+        querySnapshot.forEach((doc) => {
+            listaAnuncios.push({
+                id: doc.id,
+                ...doc.data()
+            });
         });
+    renderizarAnuncios(listaAnuncios);
+    } catch (erro) {
+        console.error("Erro ao carregar:");
+        main.innerHTML = "<p>Erro ao carregar anúncios.</p>";
+    }
+}
+
+function filtrarMeusAnuncios() {
+    const user = auth.currentUser;
+
+    if (!user) {
+        alert("Faça login primeiro");
+        return;
+    }
+
+    const meus = listaAnuncios.filter((anuncio) => {
+        return anuncio.usuario === user.email;
     });
 
-    renderizarAnuncios(listaAnuncios);
+    renderizarAnuncios(meus);
 }
 
 function filtrarAnuncios(textoBusca) {
@@ -130,16 +188,19 @@ if (lista.length === 0) {
             <p>${anuncio.descricao}</p>
             <p class="categoria"><strong>Categoria:</strong>${anuncio.categoria}</p>
 
+            <p><strong>Criado por:</strong> ${anuncio.usuario}</p>
+
             <!-- <a class="whatsapp" 
             href="https://wa.me/55${anuncio.whatsapp}?text=Olá,%20vi%20seu%20anúncio%20no%20site%20de%20Serviços%20Locais!" target="_blank">
                 Falar no WhatsApp
             </a>-->
 
             <div class="acoes">
-                <a href="
-                 https://wa.me/55${anuncio.whatsapp}" target="_blank" class="whatsapp">
+                <a href="https://wa.me/55${anuncio.whatsapp}" target="_blank" class="whatsapp">
                     Whatsapp
                 </a>
+
+                <button class="editar" data-id="${anuncio.id}">Editar</button>
 
                 <button class="excluir" data-id="${anuncio.id}">
                     Excluir
@@ -200,6 +261,45 @@ form.addEventListener("submit", function(event) {
     }
 });
 
+btnMeus.addEventListener("click", () => {
+    filtrarMeusAnuncios();
+});
+
+btnTodos.addEventListener("click", () => {
+    renderizarAnuncios(listaAnuncios);
+})
+
+btnCadastro.addEventListener("click", async () => {
+    const email = inputEmail.value;
+    const senha = inputSenha.value;
+
+    try {
+        await createUserWithEmailAndPassword(auth, email, senha);
+        alert("Usuário criado!");
+    } catch (erro) {
+        console.error(erro);
+        alert("Erro ao cadastrar" + erro.message);
+    }
+});
+
+btnLogin.addEventListener("click", async () => {
+    const email = inputEmail.value;
+    const senha = inputSenha.value;
+
+    try {
+        await signInWithEmailAndPassword(auth, email, senha);
+        alert("Login realizado!");
+    } catch (erro) {
+        console.error(erro);
+        alert("Erro ao logar");
+    }
+});
+
+btnLogout.addEventListener("click", async () => {
+    await signOut(auth);
+    alert("Saiu da conta");
+})
+
 
 campoBusca.addEventListener("input", () => {
     const texto = campoBusca.value.trim();
@@ -214,16 +314,33 @@ campoBusca.addEventListener("input", () => {
     renderizarAnuncios(resultado);
 });
 
-document.querySelectorAll(".filtros button").forEach(botao => {
-    botao.addEventListener("click", () => {
-        const categoria = botao.textContent;
-        filtrarCategoria(categoria, botao);
-    });
-});
-
 main.addEventListener("click", async (event) => {
 
+    const botaoEditar = event.target.closest(".editar");
     const botaoExcluir = event.target.closest(".excluir");
+
+    if (botaoEditar) {
+        const id = botaoEditar.getAttribute("data-id");
+
+        const anuncio = listaAnuncios.find(a => a.id === id);
+
+        const user = auth.currentUser;
+
+        if (!user || anuncio.usuario !== user.email) {
+            alert("Você não pode editar este anúncio");
+            return;
+        }
+
+        // Preencher formulário
+        document.getElementById("nome").value = anuncio.nome;
+        document.getElementById("descricao").value = anuncio.descricao;
+        document.getElementById("whatsapp").value = anuncio.whatsapp;
+        document.getElementById("categoria").value = anuncio.categoria;
+
+        idEditando = id;
+
+        return;
+    }
 
     if (!botaoExcluir) return;
 
@@ -232,9 +349,22 @@ main.addEventListener("click", async (event) => {
 
     const id = botaoExcluir.getAttribute("data-id");
 
-    await deleteDoc(doc(db, "anuncios", id));
+    const anuncio = listaAnuncios.find(a => a.id === id);
 
-    carregarAnunciosFirebase();
+    const user = auth.currentUser;
+    if (anuncio.usuario && anuncio.usuario !== user.email) {
+        alert("Você não pode excluir este anúncio");
+        return;
+    }
+
+    try {
+        
+        await deleteDoc(doc(db, "anuncios", id));
+        carregarAnunciosFirebase();
+    } catch (erro) {
+    console.error("Erro ao excluir:", erro);
+    alert("Erro ao excluir anúncio");
+    }
 
     /*const novaLista = listaAnuncios.filter((anuncio) => {
         return anuncio.id !== id;*/
@@ -256,4 +386,24 @@ const botaoLimpar = document.getElementById("limpar-tudo");
 
         renderizarAnuncios(listaAnuncios);
     })
+
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            usuarioLogadoTexto.innerHTML = "Logado como: " + user.email;
+
+            btnLogin.style.display = "none";
+            btnCadastro.style.display = "none";
+            btnLogout.style.display = "inline-block";
+
+            form.style.display = "block";
+        } else {
+            usuarioLogadoTexto.innerHTML = "Nenhum usuário logado";
+
+            btnLogin.style.display = "inline-block";
+            btnCadastro.style.display = "inline-block";
+            btnLogout.style.display = "none";
+
+            form.style.display = "none";
+        }
+    });
 carregarAnunciosFirebase();
