@@ -165,10 +165,17 @@ main {
 }
 
 /* ============ BTN MEUS ANUNCIOS ============ */
-#btn-meus {
+#btn-meus, #btn-todos {
     background: #222;
     color: white;
-    
+    border-radius: 5px;
+    padding: 10px 10px;
+    border: none;
+    cursor: pointer;
+}
+
+#btn-meus:hover, #btn-todos:hover {
+    background: #555;
 }
 
 .editar {
