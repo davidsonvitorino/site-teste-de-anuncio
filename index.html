@@ -25,12 +25,15 @@
         </a>
 
         <section class="filtros">
-            <button>Todos</button>
-            <button>Eletricista</button>
-            <button>Salão</button>
-            <button>Mecânica</button>
-            <button>Pedreiro</button>
+            <button onclick="filtrarCategoria('Todos')">Todos</button>
+            <button onclick="filtrarCategoria('Eletricista')">Eletricista</button>
+            <button onclick="filtrarCategoria('Salão')">Salão</button>
+            <button onclick="filtrarCategoria('Mecânica')">Mecânica</button>
+            <button onclick="filtrarCategoria('Pedreiro')">Pedreiro</button>
         </section>
+
+        <button id="btn-meus">Meus anúncios</button>
+        <button id="btn-todos">Todos</button>
 
         <!-- Lista de anúncios -->
          <main>
@@ -39,9 +42,22 @@
     </section>
 
     <!-- Campo de busca -->
-        <section class="busca">
-            <input type="text" id="campo-busca" placeholder="Buscar serviços...">
-        </section>
+    <section class="busca">
+        <input type="text" id="campo-busca" placeholder="Buscar serviços...">
+    </section>
+
+    <section class="login">
+        <h2>Login</h2>
+
+        <input type="email" id="email" placeholder="Email">
+        <input type="password" id="senha" placeholder="Senha">
+
+        <button id="btn-login">Entrar</button>
+        <button id="btn-cadastro">Cadastrar</button>
+        <button id="btn-logout">Sair</button>
+    </section>
+
+    <p id="usuario-logado"></p>
 
     <section class="formulario">
         <h2>Cadastro de Anúncio</h2>
@@ -58,7 +74,7 @@
                 <option class="btn-filtro" value="">Selecione uma categoria</option>
                 <option class="btn-filtro" value="Eletricista">Eletricista</option>
                 <option class="btn-filtro" value="Salão">Salão</option>
-                <option class="btn-filtro" value="Mecânica">Mecânica</option>
+                <option class="btn-filtro" value="MecÂnica">Mecânica</option>
                 <option class="btn-filtro" value="Pedreiro">Pedreiro</option>
                 <option class="btn-filtro" value="Outros">Outros</option>
             </select>
