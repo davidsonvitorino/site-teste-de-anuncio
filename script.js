@@ -399,14 +399,28 @@ main.addEventListener("click", async (event) => {
 
 const botaoLimpar = document.getElementById("limpar-tudo");
 
-    botaoLimpar.addEventListener("click", () => {
-        const confirmar = confirm("Deseja apagar todos os anúncios?");
+    botaoLimpar.addEventListener("click", async () => {
+        const user = auth.currentUser;
 
+        if (!user) {
+            alert("Faça login para limpar seus anúncios");
+            return;
+        }
+
+        const confirmar = confirm("Deseja apagar todos os anúncios?");
         if (!confirmar) return;
 
-        listaAnuncios.length = 0;
+        // Aqui você decide: apagar só os seus anúncios ou todos
+        // Exemplo: apagar apenas os anúncios do usuário logado
+        const querySnapshot = await getDocs(collection(db, "anuncios"));
+        querySnapshot.forEach(async (docSnap) => {
+            const anuncio = docSnap.data();
+            if (anuncio.usuario === user.email) {
+                await deleteDoc(doc(db, "anuncios", docSnap.id));
+            }
+        });
 
-        renderizarAnuncios(listaAnuncios);
+        carregarAnunciosFirebase();
     })
 
     const loginSection = document.querySelector(".login");
