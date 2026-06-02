@@ -3,7 +3,7 @@ body {
     margin: 0;
     padding: 0;
     font-family: Arial, Helvetica, sans-serif;
-    background: linear-gradient( to rigth, #f4f4f4, #e8f0ff);
+    background: linear-gradient( to right, #f4f4f4, #e8f0ff);
 }
 
 /* ============ HEADER ============ */
@@ -79,18 +79,20 @@ main {
 .anuncio {
     background: white;
     padding: 15px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 16px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 
     display: flex;
     flex-direction: column;
+
+    transition: 0.2s;
 }
 
 .anuncio:hover {
-    transform: translateY(-4PX);
+    transform: translateY(-5PX);
     transition: 0.2s;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
 }
 
 .anuncio h2 {
@@ -106,9 +108,9 @@ main {
 
 .imagem-anuncio {
     width: 100%;
-    height: 180%;
+    height: 180px;
     object-fit: cover;
-    border-radius: 10px;
+    border-radius: 12px;
     margin-bottom: 10px;
 }
 
@@ -178,6 +180,38 @@ main {
     background: #555;
 }
 
+#btn-login, #btn-cadastro  {
+    background: #2c7be5;
+    color: white;
+    border-radius: 5px;
+    padding: 10px 10px;
+    margin-right: 5px;
+    border: none;
+    cursor: pointer;
+}
+
+#btn-logout {
+    background: #2c7be5;
+    color: white;
+    border-radius: 5px;
+    width: 80px;
+    padding: 10px 10px;
+    margin-left: 40px;
+    border: none;
+    cursor: pointer;
+}
+
+#email, #senha {
+    padding: 10px;
+    margin: 0 20px 20px 20px ;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.login-titulo, #usuario-logado {
+    margin-left: 40px;
+}
+
 .editar {
     margin: 10px;
     padding: 10px 10px;
@@ -222,6 +256,10 @@ main {
 
 button {
     transition: all 0.2s ease;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
 }
 
 .formulario button {
@@ -258,7 +296,31 @@ button {
 @media (max-width: 600px) {
     main {
         grid-template-columns: 1fr;
+        padding: 10px
     }
+
+    .anuncio {
+        padding: 10px
+    }
+    .anuncio h2 {
+        font-size: 18px;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.anuncio {
+    animation: fadeIn 0.4s ease;
 }
 
 @media (min-width: 900px) {

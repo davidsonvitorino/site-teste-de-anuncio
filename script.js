@@ -21,7 +21,7 @@
     onAuthStateChanged,
     signOut
    } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js"
-  
+
   const firebaseConfig = {
     apiKey: "AIzaSyDzJmbzatoZl5Ak-mZ9AMo5G02VKcK_qQE",
     authDomain: "site-de-anuncios-8d660.firebaseapp.com",
@@ -36,6 +36,20 @@
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
   const auth = getAuth(app);
+
+  import {
+    setPersistence,
+    browserSessionPersistence
+   } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js"
+
+   // Configura para não manter login após fechar o navegador
+   setPersistence(auth, browserSessionPersistence)
+   .then(() => {
+    console.log("Login só dura enquanto a aba estiver aberta.");
+   })
+   .catch((error) => {
+    console.error("Erro ao configurar persistência:", error);
+   });
 
 // ============ SELEÇÃO DE ELEMENTOS ============ 
 const listaAnuncios = [];
@@ -276,6 +290,10 @@ btnCadastro.addEventListener("click", async () => {
     try {
         await createUserWithEmailAndPassword(auth, email, senha);
         alert("Usuário criado!");
+
+        // Limpar campos após cadastro
+        inputEmail.value = "";
+        inputSenha.value = "";
     } catch (erro) {
         console.error(erro);
         alert("Erro ao cadastrar" + erro.message);
@@ -289,6 +307,10 @@ btnLogin.addEventListener("click", async () => {
     try {
         await signInWithEmailAndPassword(auth, email, senha);
         alert("Login realizado!");
+
+        // Limpar campos após login
+        inputEmail.value = "";
+        inputSenha.value = "";
     } catch (erro) {
         console.error(erro);
         alert("Erro ao logar");
@@ -387,23 +409,44 @@ const botaoLimpar = document.getElementById("limpar-tudo");
         renderizarAnuncios(listaAnuncios);
     })
 
+    const loginSection = document.querySelector(".login");
+    //const btnLogout = document.getElementById("btn-logout");
+
     onAuthStateChanged(auth, (user) => {
         if (user) {
             usuarioLogadoTexto.innerHTML = "Logado como: " + user.email;
 
-            btnLogin.style.display = "none";
-            btnCadastro.style.display = "none";
+            // Esconde toda a seção de login
+            loginSection.style.display = "none";
+
+            // Mostra logout
             btnLogout.style.display = "inline-block";
 
-            form.style.display = "block";
+            // Mostra formulário de anúncios
+            form. style.display = "block";
+
+            //btnLogin.style.display = "none";
+            //btnCadastro.style.display = "none";
+            btnLogout.style.display = "inline-block";
+
+            //form.style.display = "block";
         } else {
             usuarioLogadoTexto.innerHTML = "Nenhum usuário logado";
 
-            btnLogin.style.display = "inline-block";
-            btnCadastro.style.display = "inline-block";
+            // Mostra seção de login
+            loginSection.style.display = "block";
+
+            // Esconde logout
             btnLogout.style.display = "none";
 
+            // Esconde formulário de anúncios
             form.style.display = "none";
+
+            //btnLogin.style.display = "inline-block";
+            //btnCadastro.style.display = "inline-block";
+            btnLogout.style.display = "none";
+
+            //form.style.display = "none";
         }
     });
 carregarAnunciosFirebase();
