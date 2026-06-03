@@ -305,6 +305,12 @@ button {
     .anuncio h2 {
         font-size: 18px;
     }
+
+    #btn-login, #btn-cadastro {
+        display: block;
+        width: 80%;
+        margin: 10px auto;
+    }
 }
 
 @keyframes fadeIn {
