@@ -364,37 +364,40 @@ main.addEventListener("click", async (event) => {
         return;
     }
 
-    if (!botaoExcluir) return;
+    if (botaoExcluir) {
 
-    const confirmar = confirm("Tem certeza que desejz excluir este anúncio?");
-    if (!confirmar) return;
+        const id = botaoExcluir.getAttribute("data-id");
 
-    const id = botaoExcluir.getAttribute("data-id");
+        const anuncio = listaAnuncios.find(a => a.id === id);
 
-    const anuncio = listaAnuncios.find(a => a.id === id);
+        const user = auth.currentUser;
+        // Se não estiver logado, não deixa excluir
+        if (!user) {
+            alert("Você precisa estar logado para excluir anúncios");
+            return;
+        }
 
-    const user = auth.currentUser;
-    if (anuncio.usuario && anuncio.usuario !== user.email) {
-        alert("Você não pode excluir este anúncio");
-        return;
-    }
+        if (anuncio.usuario && anuncio.usuario !== user.email) {
+            alert("Você não pode excluir este anúncio");
+            return;
+        }
 
-    try {
+        const confirmar = confirm("Tem certeza que desejz excluir este anúncio?");
+        if (!confirmar) return;
+
+        try {
+            
+            await deleteDoc(doc(db, "anuncios", id));
+            carregarAnunciosFirebase();
+        } catch (erro) {
+            console.error("Erro ao excluir:", erro);
+            alert("Erro ao excluir anúncio");
+        }
         
-        await deleteDoc(doc(db, "anuncios", id));
-        carregarAnunciosFirebase();
-    } catch (erro) {
-    console.error("Erro ao excluir:", erro);
-    alert("Erro ao excluir anúncio");
+        listaAnuncios.length = 0;
+
+        renderizarAnuncios(listaAnuncios);
     }
-
-    /*const novaLista = listaAnuncios.filter((anuncio) => {
-        return anuncio.id !== id;*/
-    
-
-    listaAnuncios.length = 0;
-
-    renderizarAnuncios(listaAnuncios);
 });
 
 const botaoLimpar = document.getElementById("limpar-tudo");
