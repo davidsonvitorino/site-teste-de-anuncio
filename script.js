@@ -165,12 +165,18 @@ function filtrarAnuncios(textoBusca) {
     });
 }
 
-function filtrarCategoria(categoria, botao) {
+function filtrarCategoria(categoria) {
     
-    const botoes = document.querySelectorAll(".btn-filtro");
+    const botoes = document.querySelectorAll(".filtros button");
 
     botoes.forEach(b => b.classList.remove("ativo"));
-    botao.classList.add("ativo");
+    
+    // Encontrar e marcar o botão clicado
+    botoes.forEach(b => {
+        if (b.textContent === categoria) {
+            b.classList.add("ativo");
+        }
+    });
 
     if (categoria === "Todos") {
         renderizarAnuncios(listaAnuncios);
@@ -257,8 +263,13 @@ form.addEventListener("submit", function(event) {
     const imagemInput = document.getElementById("imagem");
     let arquivo = imagemInput.files[0];
 
-    if (!nome || !descricao || !whatsapp || !categoria) {
-        alert("Preencha todos os campos.");
+    if (!nome.trim() || !whatsapp.trim() || !categoria.trim()) {
+        alert("Preencha os campos obrigatórios: Nome, WhatsApp e Categoria.");
+        return;
+    }
+
+    if (whatsapp.length < 10) {
+        alert("WhatsApp inválido. Use DDD + número (mínimo 10 dígitos).");
         return;
     }
 
@@ -284,36 +295,65 @@ btnTodos.addEventListener("click", () => {
 })
 
 btnCadastro.addEventListener("click", async () => {
-    const email = inputEmail.value;
+    const email = inputEmail.value.trim();
     const senha = inputSenha.value;
+
+    if (!email || !senha) {
+        alert("Preencha email e senha.");
+        return;
+    }
+
+    if (senha.length < 6) {
+        alert("A senha deve ter no mínimo 6 caracteres.");
+        return;
+    }
 
     try {
         await createUserWithEmailAndPassword(auth, email, senha);
-        alert("Usuário criado!");
+        alert("Usuário criado com sucesso!");
 
         // Limpar campos após cadastro
         inputEmail.value = "";
         inputSenha.value = "";
     } catch (erro) {
         console.error(erro);
-        alert("Erro ao cadastrar" + erro.message);
+        if (erro.code === "auth/email-already-in-use") {
+            alert("Este email já está cadastrado.");
+        } else if (erro.code === "auth/invalid-email") {
+            alert("Email inválido.");
+        } else {
+            alert("Erro ao cadastrar: " + erro.message);
+        }
     }
 });
 
 btnLogin.addEventListener("click", async () => {
-    const email = inputEmail.value;
+    const email = inputEmail.value.trim();
     const senha = inputSenha.value;
+
+    if (!email || !senha) {
+        alert("Preencha email e senha para fazer login.");
+        return;
+    }
 
     try {
         await signInWithEmailAndPassword(auth, email, senha);
-        alert("Login realizado!");
+        alert("Login realizado com sucesso!");
 
         // Limpar campos após login
         inputEmail.value = "";
         inputSenha.value = "";
     } catch (erro) {
         console.error(erro);
-        alert("Erro ao logar");
+        if (erro.code === "auth/user-not-found") {
+            alert("Usuário não encontrado. Faça cadastro primeiro.");
+        } else if (erro.code === "auth/wrong-password") {
+            alert("Senha incorreta.");
+        } else if (erro.code === "auth/invalid-email") {
+            alert("Email inválido.");
+        } else {
+            alert("Erro ao fazer login: " + erro.message);
+        }
     }
 });
 

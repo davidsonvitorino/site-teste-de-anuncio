@@ -90,7 +90,7 @@ main {
 }
 
 .anuncio:hover {
-    transform: translateY(-5PX);
+    transform: translateY(-5px);
     transition: 0.2s;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
 }
@@ -198,14 +198,208 @@ main {
     padding: 10px 10px;
     margin-left: 40px;
     border: none;
+}
+
+/* ============ RESPONSIVIDADE MOBILE ============ */
+@media (max-width: 768px) {
+    main {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        padding: 15px;
+    }
+
+    .busca input {
+        width: 95%;
+        font-size: 14px;
+    }
+
+    .filtros {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 5px;
+    }
+
+    .filtros button {
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+
+    .anuncio {
+        padding: 12px;
+    }
+
+    header {
+        padding: 20px 10px;
+    }
+
+    header h1 {
+        font-size: 24px;
+        margin: 0;
+    }
+
+    .cta {
+        margin: 10px;
+        padding: 15px;
+    }
+
+    .formulario {
+        margin: 10px;
+        padding: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    main {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .filtros button {
+        padding: 5px 8px;
+        font-size: 11px;
+        margin: 3px;
+    }
+
+    .imagem-anuncio {
+        height: 150px;
+    }
+
+    .acoes {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .acoes button,
+    .acoes a {
+        width: 100%;
+        text-align: center;
+    }
+
+    #btn-meus, #btn-todos,
+    #btn-login, #btn-cadastro {
+        width: 100%;
+        margin: 5px 0;
+    }
+
+    .formulario form input,
+    .formulario form select {
+        width: 100%;
+        margin: 8px 0;
+    }
+}
     cursor: pointer;
+}
+
+/* ============ SEÇÃO LOGIN ============ */
+.login {
+    background: white;
+    margin: 20px;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+.login-titulo {
+    color: #2c7be5;
+    margin-bottom: 20px;
 }
 
 #email, #senha {
     padding: 10px;
-    margin: 0 20px 20px 20px ;
+    margin: 10px auto;
+    display: block;
+    width: 85%;
     border-radius: 5px;
     border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+#email:focus, #senha:focus {
+    outline: none;
+    border: 2px solid #2c7be5;
+    box-shadow: 0 0 5px rgba(44, 123, 229, 0.3);
+}
+
+/* ============ FORMULÁRIO DE ANÚNCIOS ============ */
+.formulario {
+    background: white;
+    margin: 20px;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.formulario h2 {
+    color: #2c7be5;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.formulario form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.formulario input,
+.formulario select {
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+}
+
+.formulario input:focus,
+.formulario select:focus {
+    outline: none;
+    border: 2px solid #2c7be5;
+    box-shadow: 0 0 5px rgba(44, 123, 229, 0.2);
+}
+
+.formulario button[type="submit"],
+#limpar-tudo {
+    padding: 12px;
+    background: #2c7be5;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 10px;
+    transition: 0.3s;
+}
+
+.formulario button[type="submit"]:hover,
+#limpar-tudo:hover {
+    background: #1a5fd0;
+}
+
+.formulario button[type="submit"]:active {
+    transform: scale(0.98);
+}
+
+.editar {
+    margin: 5px;
+    padding: 8px 12px;
+    background: transparent;
+    color: #2c7be5;
+    border: 1px solid #2c7be5;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.editar:hover {
+    background: #2c7be5;
+    color: white;
 }
 
 .login-titulo, #usuario-logado {
