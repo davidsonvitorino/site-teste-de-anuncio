@@ -49,14 +49,14 @@
     <section class="login">
         <h2 class="login-titulo">Login</h2>
 
-        <input type="email" id="email" placeholder="Email">
-        <input type="password" id="senha" placeholder="Senha">
+        <input type="email" id="email" name="email" placeholder="Email" autocomplete="email">
+        <input type="password" id="senha" name="senha" placeholder="Senha" autocomplete="current-password">
 
         <button id="btn-login">Entrar</button>
         <button id="btn-cadastro">Cadastrar</button>
     </section>
 
-    <button id="btn-logout">Sair</button>
+    <button id="btn-logout" style="display: none;">Sair</button>
     <p id="usuario-logado"></p>
 
     <section class="formulario">
