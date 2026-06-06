@@ -51,6 +51,8 @@ header {
     background: #222;
 }
 
+
+
 main {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -570,9 +572,12 @@ main {
 /* ============ FORMULÁRIO ============ */
 .formulario {
     background: white;
-    margin: 20px;
     padding: 20px;
     border-radius: 8px;
+}
+
+#usuario-logado {
+    text-align: center;
 }
 
 .formulario h2 {
@@ -603,7 +608,7 @@ button {
     cursor: pointer;
 }
 
-.formulario button {
+.formulario button, #btn-logout{
     width: 100%;
     padding: 12px;
     margin: 10px;
@@ -615,7 +620,7 @@ button {
     cursor: pointer;
 }
 
-.formulario button:hover {
+.formulario button:hover, #btn-logout:hover {
     background-color: #1a5fd0;
 }
 
