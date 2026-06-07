@@ -457,6 +457,35 @@ main {
     margin-bottom: 20px;
 }
 
+.mensagem {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #2c7be5;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    transform: translateY(-10px);
+    z-index: 9999;
+}
+
+.mensagem.mostrar {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.mensagem.erro {
+    background: #e74c3c;
+}
+
+.mensagem.sucesso {
+    background: #2ecc71
+}
+
 #email, #senha {
     padding: 10px;
     margin: 10px auto;

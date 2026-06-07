@@ -76,6 +76,17 @@ function limparNumero(numero) {
     return numero.replace(/\D/g, "");
 }
 
+function mostrarMensagem(texto, tipo = "sucesso") {
+    const msg = document.getElementById("mensagem");
+    msg.textContent = texto;
+    msg.className = "mensagem " + tipo + " mostrar";
+
+    setTimeout(() => {
+        msg.classList.remove("mostrar");
+    }, 3000); // desaparece em 3 segundos
+}
+
+
 async function salvarAnuncio(nome, descricao, whatsapp, categoria, imagem) {
     const user = auth.currentUser;
 
@@ -299,30 +310,29 @@ btnCadastro.addEventListener("click", async () => {
     const senha = inputSenha.value;
 
     if (!email || !senha) {
-        alert("Preencha email e senha.");
+        mostrarMensagem("Preencha email e senha.", "erro");
         return;
     }
 
     if (senha.length < 6) {
-        alert("A senha deve ter no mínimo 6 caracteres.");
+        mostrarMensagem("A senha deve ter no mínimo 6 caracteres.", "erro");
         return;
     }
 
     try {
         await createUserWithEmailAndPassword(auth, email, senha);
-        alert("Usuário criado com sucesso!");
+        mostrarMensagem("Usuário criado com sucesso!", "sucesso");
 
-        // Limpar campos após cadastro
         inputEmail.value = "";
         inputSenha.value = "";
     } catch (erro) {
         console.error(erro);
         if (erro.code === "auth/email-already-in-use") {
-            alert("Este email já está cadastrado.");
+            mostrarMensagem("Este email já está cadastrado.", "erro");
         } else if (erro.code === "auth/invalid-email") {
-            alert("Email inválido.");
+            mostrarMensagem("Email inválido.", "erro");
         } else {
-            alert("Erro ao cadastrar: " + erro.message);
+            mostrarMensagem("Erro ao cadastrar: " + erro.message, "erro");
         }
     }
 });
@@ -332,35 +342,35 @@ btnLogin.addEventListener("click", async () => {
     const senha = inputSenha.value;
 
     if (!email || !senha) {
-        alert("Preencha email e senha para fazer login.");
+        mostrarMensagem("Preencha email e senha para fazer login.", "erro");
         return;
     }
 
     try {
         await signInWithEmailAndPassword(auth, email, senha);
-        alert("Login realizado com sucesso!");
+        mostrarMensagem("Login realizado com sucesso!", "sucesso");
 
-        // Limpar campos após login
         inputEmail.value = "";
         inputSenha.value = "";
     } catch (erro) {
         console.error(erro);
         if (erro.code === "auth/user-not-found") {
-            alert("Usuário não encontrado. Faça cadastro primeiro.");
+            mostrarMensagem("Usuário não encontrado. Faça cadastro primeiro.", "erro");
         } else if (erro.code === "auth/wrong-password") {
-            alert("Senha incorreta.");
+            mostrarMensagem("Senha incorreta.", "erro");
         } else if (erro.code === "auth/invalid-email") {
-            alert("Email inválido.");
+            mostrarMensagem("Email inválido.", "erro");
         } else {
-            alert("Erro ao fazer login: " + erro.message);
+            mostrarMensagem("Erro ao fazer login: " + erro.message, "erro");
         }
     }
 });
 
 btnLogout.addEventListener("click", async () => {
     await signOut(auth);
-    alert("Saiu da conta");
-})
+    mostrarMensagem("Saiu da conta", "sucesso");
+});
+
 
 
 campoBusca.addEventListener("input", () => {
