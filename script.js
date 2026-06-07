@@ -105,7 +105,7 @@ async function salvarAnuncio(nome, descricao, whatsapp, categoria, imagem) {
 
             idEditando = null;
 
-            alert("Anúncio atualizado!");
+            mostrarMensagem("Anúncio atualizado!", "sucesso");
         } else {
 
         
@@ -117,7 +117,7 @@ async function salvarAnuncio(nome, descricao, whatsapp, categoria, imagem) {
                 imagem,
                 usuario: user ? user.email : "anonimo"
             });
-            alert("Anúncio salvo na nuvem");
+            mostrarMensagem("Anúncio salvo na nuvem", "sucesso");
         }
 
         carregarAnunciosFirebase(); //atualiza a lista
@@ -125,7 +125,7 @@ async function salvarAnuncio(nome, descricao, whatsapp, categoria, imagem) {
 
     } catch (erro) {
     console.error(erro);
-    alert("Erro ao salvar");
+    mostrarMensagem("Erro ao salvar", "erro");
     }
 }
 
@@ -399,7 +399,7 @@ main.addEventListener("click", async (event) => {
         const user = auth.currentUser;
 
         if (!user || anuncio.usuario !== user.email) {
-            alert("Você não pode editar este anúncio");
+            mostrarMensagem("Você não pode editar este anúncio", "erro");
             return;
         }
 
@@ -423,12 +423,12 @@ main.addEventListener("click", async (event) => {
         const user = auth.currentUser;
         // Se não estiver logado, não deixa excluir
         if (!user) {
-            alert("Você precisa estar logado para excluir anúncios");
+            mostrarMensagem("Você precisa estar logado para excluir anúncios", "erro");
             return;
         }
 
         if (anuncio.usuario && anuncio.usuario !== user.email) {
-            alert("Você não pode excluir este anúncio");
+            mostrarMensagem("Você não pode excluir este anúncio", "erro");
             return;
         }
 
@@ -441,7 +441,7 @@ main.addEventListener("click", async (event) => {
             carregarAnunciosFirebase();
         } catch (erro) {
             console.error("Erro ao excluir:", erro);
-            alert("Erro ao excluir anúncio");
+            mostrarMensagem("Erro ao excluir anúncio", "erro");
         }
         
         listaAnuncios.length = 0;
@@ -456,7 +456,7 @@ const botaoLimpar = document.getElementById("limpar-tudo");
         const user = auth.currentUser;
 
         if (!user) {
-            alert("Faça login para limpar seus anúncios");
+            mostrarMensagem("Faça login para limpar seus anúncios", "erro");
             return;
         }
 
