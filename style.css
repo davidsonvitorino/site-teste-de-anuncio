@@ -486,6 +486,49 @@ main {
     background: #2ecc71
 }
 
+.modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6);
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+}
+
+.modal-conteudo {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 400px;
+    text-align: center;
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-acoes {
+    margin-top: 15px;
+    display: flex;
+    justify-content: space-around;
+}
+
+.modal-acoes button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+#modal-confirmar {
+    background: #e74c3c;
+    color: white;
+}
+
+#modal-cancelar {
+    background: #ccc;
+}
+
+
 #email, #senha {
     padding: 10px;
     margin: 10px auto;

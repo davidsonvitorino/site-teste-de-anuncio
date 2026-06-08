@@ -86,6 +86,30 @@ function mostrarMensagem(texto, tipo = "sucesso") {
     }, 3000); // desaparece em 3 segundos
 }
 
+function abrirModalConfirmacao(texto, callbackConfirmar) {
+    const modal = document.getElementById("modal-confirmacao");
+    const modalTexto = document.getElementById("modal-texto");
+    const btnConfirmar = document.getElementById("modal-confirmar");
+    const btnCancelar = document.getElementById("modal-cancelar");
+
+    modalTexto.textContent = texto;
+    modal.style.display = "flex";
+
+    // Remove listeners antigos
+    btnConfirmar.onclick = null;
+    btnCancelar.onclick = null;
+
+    btnConfirmar.onclick = () => {
+        modal.style.display = "none";
+        callbackConfirmar();
+    };
+
+    btnCancelar.onclick = () => {
+        modal.style.display = "none";
+    };
+}
+
+
 
 async function salvarAnuncio(nome, descricao, whatsapp, categoria, imagem) {
     const user = auth.currentUser;
@@ -432,17 +456,17 @@ main.addEventListener("click", async (event) => {
             return;
         }
 
-        const confirmar = confirm("Tem certeza que desejz excluir este anúncio?");
-        if (!confirmar) return;
+        const confirmar = abrirModalConfirmacao("Tem certeza que desejz excluir este anúncio?", async () => {
 
         try {
             
             await deleteDoc(doc(db, "anuncios", id));
             carregarAnunciosFirebase();
+            mostrarMensagem("Anúncio excluido com sucesso!", "sucesso");
         } catch (erro) {
-            console.error("Erro ao excluir:", erro);
             mostrarMensagem("Erro ao excluir anúncio", "erro");
         }
+    });
         
         listaAnuncios.length = 0;
 
@@ -460,21 +484,21 @@ const botaoLimpar = document.getElementById("limpar-tudo");
             return;
         }
 
-        const confirmar = confirm("Deseja apagar todos os anúncios?");
-        if (!confirmar) return;
-
-        // Aqui você decide: apagar só os seus anúncios ou todos
-        // Exemplo: apagar apenas os anúncios do usuário logado
-        const querySnapshot = await getDocs(collection(db, "anuncios"));
-        querySnapshot.forEach(async (docSnap) => {
-            const anuncio = docSnap.data();
-            if (anuncio.usuario === user.email) {
-                await deleteDoc(doc(db, "anuncios", docSnap.id));
-            }
-        });
-
-        carregarAnunciosFirebase();
-    })
+        abrirModalConfirmacao("Deseja apagar todos os seus anúncios?", async () => {
+            try {
+                const querySnapshot = await getDocs(collection(db, "anuncios"));
+                querySnapshot.forEach(async (docSnap) => {
+                    const anuncio = docSnap.data();
+                    if (anuncio.usuario === user.email) {
+                        await deleteDoc(doc(db, "anuncios", docSnap.id));
+                    }
+                });
+                carregarAnunciosFirebase();
+                mostrarMensagem("Todos os seus anúncios foram apagados.", "sucesso");
+            } catch (erro) {
+                mostrarMensagem("Erro ao limpar anúncios.", "erro");
+        }
+    });
 
     const loginSection = document.querySelector(".login");
     //const btnLogout = document.getElementById("btn-logout");
@@ -492,11 +516,8 @@ const botaoLimpar = document.getElementById("limpar-tudo");
             // Mostra formulário de anúncios
             form. style.display = "block";
 
-            //btnLogin.style.display = "none";
-            //btnCadastro.style.display = "none";
             btnLogout.style.display = "inline-block";
-
-            //form.style.display = "block";
+            
         } else {
             usuarioLogadoTexto.innerHTML = "Nenhum usuário logado";
 
@@ -509,11 +530,8 @@ const botaoLimpar = document.getElementById("limpar-tudo");
             // Esconde formulário de anúncios
             form.style.display = "none";
 
-            //btnLogin.style.display = "inline-block";
-            //btnCadastro.style.display = "inline-block";
             btnLogout.style.display = "none";
-
-            //form.style.display = "none";
         }
     });
-carregarAnunciosFirebase();
+});
+    carregarAnunciosFirebase();
