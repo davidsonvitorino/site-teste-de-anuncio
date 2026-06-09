@@ -228,6 +228,10 @@ if (lista.length === 0) {
         return;
     }
     lista.forEach((anuncio) => {
+        const user = auth.currentUser;
+
+        const podeEditar = user && anuncio.usuario === user.email;
+
         const div = document.createElement("div");
         div.classList.add("anuncio");
 
@@ -246,15 +250,27 @@ if (lista.length === 0) {
             </a>-->
 
             <div class="acoes">
-                <a href="https://wa.me/55${anuncio.whatsapp}" target="_blank" class="whatsapp">
+
+                <a href="https://wa.me/55${anuncio.whatsapp}"
+                target="_blank"
+                class="whatsapp">
                     Whatsapp
                 </a>
 
-                <button class="editar" data-id="${anuncio.id}">Editar</button>
+                ${podeEditar ? `
 
-                <button class="excluir" data-id="${anuncio.id}">
-                    Excluir
-                </button>
+                    <button class="editar"
+                            data-id="${anuncio.id}">
+                        Editar
+                    </button>
+
+                    <button class="excluir"
+                            data-id="${anuncio.id}">
+                        Excluir
+                    </button>
+
+                ` : ""}
+
             </div>
         `;
 
