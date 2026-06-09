@@ -167,7 +167,9 @@ async function carregarAnunciosFirebase() {
                 ...doc.data()
             });
         });
+
     renderizarAnuncios(listaAnuncios);
+
     } catch (erro) {
         console.error("Erro ao carregar:");
         main.innerHTML = "<p>Erro ao carregar anúncios.</p>";
@@ -201,17 +203,6 @@ function filtrarAnuncios(textoBusca) {
 }
 
 function filtrarCategoria(categoria) {
-    
-    const botoes = document.querySelectorAll(".filtros button");
-
-    botoes.forEach(b => b.classList.remove("ativo"));
-    
-    // Encontrar e marcar o botão clicado
-    botoes.forEach(b => {
-        if (b.textContent === categoria) {
-            b.classList.add("ativo");
-        }
-    });
 
     if (categoria === "Todos") {
         renderizarAnuncios(listaAnuncios);
@@ -220,10 +211,14 @@ function filtrarCategoria(categoria) {
 
     const filtrados = listaAnuncios.filter((anuncio) => {
         return anuncio.categoria === categoria;
-    })
+    });
 
     renderizarAnuncios(filtrados);
 }
+
+window.filtrarCategoria = filtrarCategoria;
+    
+
 
 function renderizarAnuncios(lista) {
     main.innerHTML = "";
@@ -319,6 +314,18 @@ form.addEventListener("submit", function(event) {
     } else {
         salvarAnuncio(nome, descricao, whatsapp, categoria, "");
     }
+});
+
+document.querySelectorAll(".filtro-btn").forEach((btn) => {
+
+    btn.addEventListener("click", () => {
+
+        const categoria = btn.dataset.categoria;
+
+        filtrarCategoria(categoria);
+
+    });
+
 });
 
 btnMeus.addEventListener("click", () => {
@@ -445,7 +452,7 @@ main.addEventListener("click", async (event) => {
         const anuncio = listaAnuncios.find(a => a.id === id);
 
         const user = auth.currentUser;
-        // Se não estiver logado, não deixa excluir
+
         if (!user) {
             mostrarMensagem("Você precisa estar logado para excluir anúncios", "erro");
             return;
@@ -456,21 +463,31 @@ main.addEventListener("click", async (event) => {
             return;
         }
 
-        const confirmar = abrirModalConfirmacao("Tem certeza que desejz excluir este anúncio?", async () => {
+        abrirModalConfirmacao(
+            "Tem certeza que deseja excluir este anúncio?",
+            async () => {
 
-        try {
-            
-            await deleteDoc(doc(db, "anuncios", id));
-            carregarAnunciosFirebase();
-            mostrarMensagem("Anúncio excluido com sucesso!", "sucesso");
-        } catch (erro) {
-            mostrarMensagem("Erro ao excluir anúncio", "erro");
-        }
-    });
-        
-        listaAnuncios.length = 0;
+                try {
 
-        renderizarAnuncios(listaAnuncios);
+                    await deleteDoc(doc(db, "anuncios", id));
+
+                    carregarAnunciosFirebase();
+
+                    mostrarMensagem(
+                        "Anúncio excluído com sucesso!",
+                        "sucesso"
+                    );
+
+                } catch (erro) {
+
+                    mostrarMensagem(
+                        "Erro ao excluir anúncio",
+                        "erro"
+                    );
+
+                }
+            }
+        );
     }
 });
 
@@ -499,39 +516,34 @@ const botaoLimpar = document.getElementById("limpar-tudo");
                 mostrarMensagem("Erro ao limpar anúncios.", "erro");
         }
     });
+});
 
-    const loginSection = document.querySelector(".login");
-    //const btnLogout = document.getElementById("btn-logout");
+const formularioSection = document.querySelector(".formulario");
+const loginSection = document.querySelector(".login");
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        usuarioLogadoTexto.innerHTML = "Logado como: " + user.email;
 
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            usuarioLogadoTexto.innerHTML = "Logado como: " + user.email;
+        // Esconde toda a seção de login
+        loginSection.style.display = "none";
 
-            // Esconde toda a seção de login
-            loginSection.style.display = "none";
+        // Mostra logout
+        btnLogout.style.display = "inline-block";
 
-            // Mostra logout
-            btnLogout.style.display = "inline-block";
+        // Mostra formulário de anúncios
+        form.style.display = "block";
+        
+    } else {
+        usuarioLogadoTexto.innerHTML = "Nenhum usuário logado";
 
-            // Mostra formulário de anúncios
-            form. style.display = "block";
+        // Mostra seção de login
+        loginSection.style.display = "block";
 
-            btnLogout.style.display = "inline-block";
-            
-        } else {
-            usuarioLogadoTexto.innerHTML = "Nenhum usuário logado";
+        // Esconde logout
+        btnLogout.style.display = "none";
 
-            // Mostra seção de login
-            loginSection.style.display = "block";
-
-            // Esconde logout
-            btnLogout.style.display = "none";
-
-            // Esconde formulário de anúncios
-            form.style.display = "none";
-
-            btnLogout.style.display = "none";
-        }
-    });
+        // Esconde formulário de anúncios
+        form.style.display = "none";
+    }
 });
     carregarAnunciosFirebase();
